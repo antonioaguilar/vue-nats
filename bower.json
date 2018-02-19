@@ -1,0 +1,19 @@
+{
+  "name": "vue-nats",
+  "description": "An in-browser WebSocket message bus for NATS applications",
+  "author": "Antonio Aguilar",
+  "license": "MIT",
+  "main": "dist/vue-nats.js",
+  "ignore": [
+    "src",
+    "rollup.config.js",
+    ".gitignore",
+    ".npmignore",
+    ".eslintrc",
+    ".babelrc",
+    "*.json",
+    "*.md",
+    "*.yml",
+    "*.lock"
+  ]
+}
