@@ -13,5 +13,11 @@ $ npm install --save vue-nats
 ```javascript
 import vueNats from 'vue-nats';
 
-Vue.use(vueNats);
+Vue.use(vueNats, {
+  url: 'ws://localhost:8080',
+  json: true,
+  reconnect: true,
+  maxReconnectAttempts: -1, // retry forever
+  reconnectTimeWait: 1000
+});
 ```

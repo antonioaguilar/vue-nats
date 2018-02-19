@@ -1,6 +1,6 @@
 {
   "name": "vue-nats",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An in-browser WebSocket message bus for NATS applications",
   "author": "Antonio Aguilar",
   "license": "MIT",
