@@ -3,3 +3,4 @@
 src
 rollup.config.js
 package-lock.json
+bower.json
