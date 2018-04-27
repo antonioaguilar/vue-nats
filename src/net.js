@@ -28,7 +28,7 @@ WebSocketProxy.prototype.end = function() {
 };
 
 WebSocketProxy.prototype.destroy = function() {
-  if(
+  if (
     this.sock.readyState === WebSocket.CONNECTING ||
     this.sock.readyState === WebSocket.OPEN
   ) {
@@ -37,7 +37,7 @@ WebSocketProxy.prototype.destroy = function() {
 };
 
 WebSocketProxy.prototype.write = function(data) {
-  if(this.sock.readyState === WebSocket.OPEN) {
+  if (this.sock.readyState === WebSocket.OPEN) {
     this.sock.send(data);
   }
 };
@@ -46,7 +46,7 @@ WebSocketProxy.prototype.pause = function() {
   console.warn('WebSocketProxy stream pause/resume is not supported yet.');
 };
 
-WebSocketProxy.prototype.resume = function() { };
+WebSocketProxy.prototype.resume = function() {};
 
 // The url is rebuilt to avoid including the auth credentials.
 exports.createConnection = function(url) {
