@@ -28,7 +28,7 @@ WebSocketProxy.prototype.end = function() {
 };
 
 WebSocketProxy.prototype.destroy = function() {
-  if(
+  if (
     this.sock.readyState === WebSocket.CONNECTING ||
     this.sock.readyState === WebSocket.OPEN
   ) {
@@ -37,7 +37,7 @@ WebSocketProxy.prototype.destroy = function() {
 };
 
 WebSocketProxy.prototype.write = function(data) {
-  if(this.sock.readyState === WebSocket.OPEN) {
+  if (this.sock.readyState === WebSocket.OPEN) {
     this.sock.send(data);
   }
 };
@@ -48,8 +48,11 @@ WebSocketProxy.prototype.pause = function() {
 
 WebSocketProxy.prototype.resume = function() { };
 
-// The url is rebuilt to avoid including the auth credentials.
+// IMPORTANT: nats.js needs to be patched:
+// replace: this.stream = net.createConnection(this.url.port, this.url.hostname);
+// with: this.stream = net.createConnection(this.url);
 exports.createConnection = function(url) {
+  // The url is rebuilt to avoid including the auth credentials.
   return new WebSocketProxy(url.format({
     protocol: url.protocol,
     slashes: url.slashes,

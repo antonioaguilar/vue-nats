@@ -1,10 +1,10 @@
-import NATS from './nats';
+import nc from './nats-0.8.8';
 
 function vueNats(Vue, options) {
 
-  if(vueNats.installed) return;
+  if (vueNats.installed) return;
 
-  let nats = NATS.connect(options);
+  let nats = nc.connect(options);
 
   Object.defineProperty(Vue.prototype, '$nats', {
     get: function() {
@@ -17,27 +17,21 @@ function vueNats(Vue, options) {
           });
           return sid;
         },
-        publish: nats.publish.bind(nats)
-        // request() is not supported due to an incompatibility issue in the JSON message payload
-        //request: function() {
-        //  let sid = nats.request.apply(nats, arguments);
-        //  self.$on('hook:beforeDestroy', function() {
-        //    nats.unsubscribe(sid);
-        //  });
-        //  return sid;
-        //},
-        //unsubscribe: nats.unsubscribe.bind(nats),
-        //flush: nats.flush.bind(nats),
-        //timeout: nats.timeout.bind(nats),
-        //close: nats.close.bind(nats)
+        publish: nats.publish.bind(nats),
+        request: nats.request.bind(nats),
+        requestOne: nats.requestOne.bind(nats),
+        unsubscribe: nats.unsubscribe.bind(nats),
+        flush: nats.flush.bind(nats),
+        timeout: nats.timeout.bind(nats),
+        close: nats.close.bind(nats)
       };
     }
   });
 
 }
 
-if(typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(vueNats)
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(vueNats);
 }
 
 export default vueNats;
