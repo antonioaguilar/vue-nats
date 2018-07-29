@@ -19,9 +19,6 @@
 /**
  * Module Dependencies
  */
-
-require('setimmediate');
-
 var net = require('./net'),
     tls = require('./tls'),
     url = require('url'),
@@ -32,7 +29,7 @@ var net = require('./net'),
 /**
  * Constants
  */
-var VERSION = '0.8.8',
+var VERSION = '1.0.1',
 
     DEFAULT_PORT = 4222,
     DEFAULT_PRE = 'nats://localhost:',
@@ -82,7 +79,7 @@ var VERSION = '0.8.8',
     BAD_AUTHENTICATION = 'BAD_AUTHENTICATION',
     BAD_AUTHENTICATION_MSG = 'User and Token can not both be provided',
     BAD_JSON = 'BAD_JSON',
-    BAD_JSON_MSG = 'Message should be a JSON object',
+    BAD_JSON_MSG = 'Message should be a non-circular JSON-serializable value',
     BAD_MSG = 'BAD_MSG',
     BAD_MSG_MSG = 'Message can\'t be a function',
     BAD_REPLY = 'BAD_REPLY',
@@ -391,8 +388,7 @@ Client.prototype.checkTLSMismatch = function() {
         return true;
     }
 
-    if (this.info.tls_required === false &&
-        this.options.tls !== false) {
+    if (!this.info.tls_required && this.options.tls !== false) {
         this.emit('error', new NatsError(NON_SECURE_CONN_REQ_MSG, NON_SECURE_CONN_REQ));
         this.closeStream();
         return true;
@@ -618,10 +614,12 @@ Client.prototype.createConnection = function() {
     // otherwise in addition to the leak events will fire fire
     if (this.stream) {
         this.stream.removeAllListeners();
-        this.stream.end();
+        this.stream.destroy();
     }
     // Create the stream
-    this.stream = net.createConnection(this.url);
+    this.stream = net.createConnection(this.url.port, this.url.hostname);
+    // this change makes it a bit faster on Linux, slightly worse on OS X
+    this.stream.setNoDelay(true);
     // Setup the proper handlers.
     this.setupHandlers();
 };
@@ -671,7 +669,6 @@ Client.prototype.close = function() {
  */
 Client.prototype.closeStream = function() {
     if (this.stream !== null) {
-        this.stream.end();
         this.stream.destroy();
         this.stream = null;
     }
@@ -894,7 +891,6 @@ Client.prototype.processInbound = function() {
                             // if we have a stream, this is from an old connection, reap it
                             if (client.stream) {
                                 client.stream.removeAllListeners();
-                                client.stream.end();
                             }
                             client.stream = tls.connect(tlsOpts, function() {
                                 client.flushPending();
@@ -1178,6 +1174,7 @@ Client.prototype.publish = function(subject, msg, opt_reply, opt_callback) {
         // undefined is not a valid JSON-serializable value, but null is
         msg = msg === undefined ? null : msg;
     }
+
     if (!subject) {
         if (opt_callback) {
             opt_callback(new NatsError(BAD_SUBJECT_MSG, BAD_SUBJECT));
@@ -1223,7 +1220,7 @@ Client.prototype.publish = function(subject, msg, opt_reply, opt_callback) {
         }
         this.sendCommand(psub + Buffer.byteLength(str) + CR_LF + str + CR_LF);
     } else {
-        var b = new Buffer(psub.length + msg.length + (2 * CR_LF_LEN) + msg.length.toString().length);
+        var b = Buffer.allocUnsafe(psub.length + msg.length + (2 * CR_LF_LEN) + msg.length.toString().length);
         var len = b.write(psub + msg.length + CR_LF);
         msg.copy(b, len);
         b.write(CR_LF, len + msg.length);

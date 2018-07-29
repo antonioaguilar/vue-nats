@@ -1,6 +1,6 @@
 {
   "name": "vue-nats",
-  "version": "1.1.0",
+  "version": "1.1.9",
   "description": "An in-browser WebSocket message bus for NATS applications",
   "author": "Antonio Aguilar",
   "license": "MIT",
@@ -12,7 +12,6 @@
     "start": "npm run build",
     "build": "rimraf dist && rollup -c",
     "dev": "rimraf dist && rollup -c -w",
-    "publish": "npm publish",
     "register": "bower register vue-nats https://github.com/antonioaguilar/vue-nats.git"
   },
   "repository": {
@@ -30,12 +29,14 @@
   ],
   "devDependencies": {
     "rimraf": "^2.6.2",
-    "rollup": "^0.57.1",
+    "rollup": "^0.63.4",
     "rollup-plugin-buble": "^0.19.2",
-    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-uglify": "^3.0.0"
+    "rollup-plugin-uglify": "3.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "setimmediate": "^1.0.5"
+  }
 }
