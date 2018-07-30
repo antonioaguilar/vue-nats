@@ -15,7 +15,7 @@ npm install --save vue-nats
 import vueNats from 'vue-nats';
 
 Vue.use(vueNats, {
-  url: 'ws://<nats-wesocket-relay>:8080',
+  url: 'ws://<nats-websocket-relay>:8080',
   json: true, // use JSON data payload
   reconnect: true, // always reconnect
   maxReconnectAttempts: -1, // retry forever
