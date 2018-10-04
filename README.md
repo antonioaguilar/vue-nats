@@ -53,10 +53,10 @@ You can use Docker to run the `gnatsd` server and the `Websockets-to-TCP` relay:
 
 ```
 # launch the gnatsd server
-docker run -it--name=nats-server --rm -d -p 4222:4222 nats -DV
+docker run -it --name=nats --rm -d -p 4222:4222 -p 8222:8222 nats -D -m 8222
 
 # launch the relay
-docker run -it --name=relay --rm -d -p 8080:8080 aaguilar/nats-relay -p 8080 nats://nats-server:4222
+docker run -it --name=relay --rm -d -p 8080:8080 aaguilar/nats-relay -p 8080 nats://nats:4222
 
 # then configure vue-nats to connect to the relay
 Vue.use(vueNats, { url: 'ws://0.0.0.0:8080', json: true });
